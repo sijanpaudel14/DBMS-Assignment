@@ -1,0 +1,152 @@
+Show existing databases
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| lab_01             |
+| lab_02             |
+| lab_03             |
+| mysql              |
+| performance_schema |
++--------------------+
+6 rows in set (0.00 sec)
+
+
+
+
+Create a new database
+
+mysql> CREATE DATABASE lab_04;
+Query OK, 1 row affected (0.03 sec)
+
+
+
+Use the created database
+mysql> USE lab_04;
+Database changed
+
+
+
+
+
+1. Create a Sales Table with the following fields
+(Sales_No,Sales_Name,Branch,Sales_Amount,DOB)
+
+mysql> CREATE TABLE Sales (
+    ->     Sales_No INT PRIMARY KEY,
+    ->     Sales_Name VARCHAR(50),
+    ->     Branch VARCHAR(50),
+    ->     Sales_Amount DECIMAL(10, 2),
+    ->     DOB DATE
+    -> );
+Query OK, 0 rows affected (0.10 sec)
+
+
+
+
+
+
+
+2. Insert five records
+
+mysql> INSERT INTO Sales (Sales_No, Sales_Name, Branch, Sales_Amount, DOB)
+    -> VALUES
+    -> (1, 'Ramesh Thapa', 'Kathmandu', 10000.00, '1990-12-15'),
+    -> (2, 'Sita Rana', 'Lalitpur', 15000.00, '1985-07-10'),
+    -> (3, 'Hari Shrestha', 'Bhaktapur', 20000.00, '1992-12-05'),
+    -> (4, 'Gita Gurung', 'Pokhara', 25000.00, '1988-03-20'),
+    -> (5, 'Ram Adhikari', 'Kathmandu', 18000.00, '1991-12-25');
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Sales;
++----------+---------------+-----------+--------------+------------+
+| Sales_No | Sales_Name    | Branch    | Sales_Amount | DOB        |
++----------+---------------+-----------+--------------+------------+
+|        1 | Ramesh Thapa  | Kathmandu |     10000.00 | 1990-12-15 |
+|        2 | Sita Rana     | Lalitpur  |     15000.00 | 1985-07-10 |
+|        3 | Hari Shrestha | Bhaktapur |     20000.00 | 1992-12-05 |
+|        4 | Gita Gurung   | Pokhara   |     25000.00 | 1988-03-20 |
+|        5 | Ram Adhikari  | Kathmandu |     18000.00 | 1991-12-25 |
++----------+---------------+-----------+--------------+------------+
+5 rows in set (0.00 sec)
+
+
+
+
+
+3. Calculate total salesamount in each branch
+
+mysql> SELECT Branch, SUM(Sales_Amount) AS Total_Sales_Amount
+    -> FROM Sales
+    -> GROUP BY Branch;
++-----------+--------------------+
+| Branch    | Total_Sales_Amount |
++-----------+--------------------+
+| Kathmandu |           28000.00 |
+| Lalitpur  |           15000.00 |
+| Bhaktapur |           20000.00 |
+| Pokhara   |           25000.00 |
++-----------+--------------------+
+4 rows in set (0.00 sec)
+
+
+
+
+
+4. Calculate average salesamount in each branch
+
+mysql> SELECT Branch, AVG(Sales_Amount) AS Average_Sales_Amount
+    -> FROM Sales
+    -> GROUP BY Branch;
++-----------+----------------------+
+| Branch    | Average_Sales_Amount |
++-----------+----------------------+
+| Kathmandu |         14000.000000 |
+| Lalitpur  |         15000.000000 |
+| Bhaktapur |         20000.000000 |
+| Pokhara   |         25000.000000 |
++-----------+----------------------+
+4 rows in set (0.00 sec)
+
+
+
+
+
+
+
+5. Display all the salesmen, DOB who are born in the month of December as day in
+character format i.e. 21-Dec-09
+
+mysql> SELECT Sales_Name, DATE_FORMAT(DOB, '%d-%b-%y') AS DOB
+    -> FROM Sales
+    -> WHERE MONTH(DOB) = 12;
++---------------+-----------+
+| Sales_Name    | DOB       |
++---------------+-----------+
+| Ramesh Thapa  | 15-Dec-90 |
+| Hari Shrestha | 05-Dec-92 |
+| Ram Adhikari  | 25-Dec-91 |
++---------------+-----------+
+3 rows in set (0.00 sec)
+
+
+
+
+
+
+
+6. Display the name and DOB of salesman in alphabetical order of the month.
+
+mysql> SELECT Sales_Name, DATE_FORMAT(DOB, '%d-%b-%y') AS DOB
+    -> FROM Sales
+    -> WHERE MONTH(DOB) = 12;
++---------------+-----------+
+| Sales_Name    | DOB       |
++---------------+-----------+
+| Ramesh Thapa  | 15-Dec-90 |
+| Hari Shrestha | 05-Dec-92 |
+| Ram Adhikari  | 25-Dec-91 |
++---------------+-----------+
+3 rows in set (0.00 sec)

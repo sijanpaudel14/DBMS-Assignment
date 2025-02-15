@@ -1,0 +1,119 @@
+Show existing databases
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| EnterpriseDB       |
+| information_schema |
+| lab_01             |
+| lab_02             |
+| lab_03             |
+| lab_04             |
+| lab_05             |
+| lab_06             |
+| mysql              |
+| performance_schema |
++--------------------+
+10 rows in set (0.00 sec)
+
+
+Use the last database
+
+mysql> USE EnterpriseDB;
+
+
+a) Determine the names of employees who earn more than their managers
+
+mysql> SELECT e1.ename AS Employee_Name, e2.ename AS Manager_Name
+    -> FROM Emp e1
+    -> JOIN Emp e2 ON e1.mgr = e2.empno
+    -> WHERE e1.sal > e2.sal;
+Empty set (0.00 sec)
+
++------------------+----------------+
+| Employee_Name    | Manager_Name   |
++------------------+----------------+
+| Rajesh Thapa     | Sanjay Sharma  |
+| Anita Koirala    | Rajesh Thapa   |
+| Rita Joshi       | Sanjay Sharma  |
+| Deepak Adhikari  | Poonam Rai     |
++------------------+----------------+
+4 rows in set (0.00 sec)
+
+
+
+
+
+b) Determine the names of employees who take the highest salary in their departments
+
+mysql> SELECT e1.ename AS Employee_Name, e1.deptno, e1.sal
+    -> FROM Emp e1
+    -> JOIN (
+    ->     SELECT deptno, MAX(sal) AS max_sal
+    ->     FROM Emp
+    ->     GROUP BY deptno
+    -> ) e2 ON e1.deptno = e2.deptno AND e1.sal = e2.max_sal;
++------------------+--------+--------+
+| Employee_Name    | deptno | sal    |
++------------------+--------+--------+
+| Sanjay Sharma    | 10     | 90000  |
+| Rajesh Thapa     | 30     | 80000  |
+| Rita Joshi       | 40     | 75000  |
++------------------+--------+--------+
+3 rows in set (0.00 sec)
+
+
+
+
+
+
+c) Determine the employees who are located at the same place
+
+mysql> SELECT e1.ename AS Employee1, e2.ename AS Employee2, d.loc
+    -> FROM Emp e1
+    -> JOIN Emp e2 ON e1.deptno = e2.deptno AND e1.empno <> e2.empno
+    -> JOIN Dept d ON e1.deptno = d.deptno
+    -> GROUP BY e1.ename, e2.ename, d.loc;
++------------+--------------+------------+
+| Employee1  | Employee2    | loc        |
++------------+--------------+------------+
+| Rajesh Thapa | Anita Koirala | Biratnagar |
++------------+--------------+------------+
+1 row in set (0.00 sec)
+
+
+
+
+
+d) Determine the employees whose total salary is like the minimum salary of any department
+
+mysql> SELECT e1.ename, e1.sal
+    -> FROM Emp e1
+    -> JOIN (
+    ->     SELECT deptno, MIN(sal) AS min_sal
+    ->     FROM Emp
+    ->     GROUP BY deptno
+    -> ) e2 ON e1.deptno = e2.deptno AND e1.sal = e2.min_sal;
++------------------+--------+
+| ename            | sal    |
++------------------+--------+
+| Deepak Adhikari  | 65000  |
++------------------+--------+
+1 row in set (0.00 sec)
+
+
+
+
+
+e) Determine the department which does not contain any employees
+
+mysql> SELECT d.dname, d.loc
+    -> FROM Dept d
+    -> LEFT JOIN Emp e ON d.deptno = e.deptno
+    -> WHERE e.deptno IS NULL;
++------------------------+-----------+
+| dname                  | loc       |
++------------------------+-----------+
+| Marketing              | Lalitpur  |
++------------------------+-----------+
+1 row in set (0.00 sec)

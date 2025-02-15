@@ -1,0 +1,195 @@
+Show existing databases
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| lab_01             |
+| mysql              |
+| performance_schema |
++--------------------+
+4 rows in set (0.00 sec)
+
+Create a new database
+
+mysql> CREATE DATABASE lab_02;
+Query OK, 1 row affected (0.01 sec)
+
+
+Use the created database
+
+mysql> USE lab_02;
+Database changed
+
+Show existing tables
+
+mysql> SHOW TABLES;
+Empty set (0.00 sec)
+
+
+
+
+
+1. Create a client master table with attributes
+
+mysql> CREATE TABLE Client_Master (
+    ->     ClientNO VARCHAR(10) PRIMARY KEY,
+    ->     Name VARCHAR(50),
+    ->     Address VARCHAR(100),
+    ->     City VARCHAR(50),
+    ->     State VARCHAR(50),
+    ->     bal_due DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (0.10 sec)
+
+Check if the table is created
+
+mysql> SHOW TABLES;
++------------------+
+| Tables_in_lab_02 |
++------------------+
+| Client_Master    |
++------------------+
+1 row in set (0.01 sec)
+
+See the structure of the table
+
+mysql> SHOW COLUMNS FROM Client_Master;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| ClientNO | varchar(10)   | NO   | PRI | NULL    |       |
+| Name     | varchar(50)   | YES  |     | NULL    |       |
+| Address  | varchar(100)  | YES  |     | NULL    |       |
+| City     | varchar(50)   | YES  |     | NULL    |       |
+| State    | varchar(50)   | YES  |     | NULL    |       |
+| bal_due  | decimal(10,2) | YES  |     | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+
+
+
+
+
+2. Insert five records into the Client_Master
+
+mysql> INSERT INTO Client_Master (ClientNO, Name, Address, City, State, bal_due)
+    -> VALUES
+    -> ('C101', 'Nabin Paudel', 'Kathmandu-1', 'Kathmandu', 'Bagmati', 3000.00),
+    -> ('C102', 'Sanjay Rana', 'Lalitpur-2', 'Lalitpur', 'Bagmati', 4500.00),
+    -> ('C103', 'Bina Lama', 'Bhaktapur-3', 'Bhaktapur', 'Bagmati', 5500.00),
+    -> ('C104', 'Anita Thapa', 'Pokhara-4', 'Pokhara', 'Gandaki', 6000.00),
+    -> ('C105', 'Keshav Adhikari', 'Chitwan-5', 'Chitwan', 'Bagmati', 7000.00);
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+
+
+
+
+
+
+3. Display Client Master Table
+
+mysql> SELECT * FROM Client_Master;
++----------+-----------------+-------------+-----------+---------+---------+
+| ClientNO | Name            | Address     | City      | State   | bal_due |
++----------+-----------------+-------------+-----------+---------+---------+
+| C101     | Nabin Paudel    | Kathmandu-1 | Kathmandu | Bagmati | 3000.00 |
+| C102     | Sanjay Rana     | Lalitpur-2  | Lalitpur  | Bagmati | 4500.00 |
+| C103     | Bina Lama       | Bhaktapur-3 | Bhaktapur | Bagmati | 5500.00 |
+| C104     | Anita Thapa     | Pokhara-4   | Pokhara   | Gandaki | 6000.00 |
+| C105     | Keshav Adhikari | Chitwan-5   | Chitwan   | Bagmati | 7000.00 |
++----------+-----------------+-------------+-----------+---------+---------+
+5 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+4. Find the name of Clients whose balance_due >5000
+
+mysql> SELECT Name FROM Client_Master WHERE bal_due > 5000;
++-----------------+
+| Name            |
++-----------------+
+| Bina Lama       |
+| Anita Thapa     |
+| Keshav Adhikari |
++-----------------+
+3 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+5. Change the bal_due of ClientNO “C123” to Rs. 5100
+
+mysql> UPDATE Client_Master SET bal_due = 5100 WHERE ClientNO = 'C103';
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+
+
+
+
+
+6. Change the name of Client_Master to Client12
+
+mysql> ALTER TABLE Client_Master RENAME TO Client12;
+Query OK, 0 rows affected (0.08 sec)
+
+
+Display the tables
+
+mysql> SHOW TABLES;
++------------------+
+| Tables_in_lab_02 |
++------------------+
+| Client12         |
++------------------+
+1 row in set (0.00 sec)
+
+
+
+
+
+
+
+7. Display the bal_due heading as “BALANCE” in the Client12 table
+
+mysql> SELECT ClientNO, Name, Address, City, State, bal_due AS BALANCE FROM Client12;
++----------+-----------------+-------------+-----------+---------+---------+
+| ClientNO | Name            | Address     | City      | State   | BALANCE |
++----------+-----------------+-------------+-----------+---------+---------+
+| C101     | Nabin Paudel    | Kathmandu-1 | Kathmandu | Bagmati | 3000.00 |
+| C102     | Sanjay Rana     | Lalitpur-2  | Lalitpur  | Bagmati | 4500.00 |
+| C103     | Bina Lama       | Bhaktapur-3 | Bhaktapur | Bagmati | 5100.00 |
+| C104     | Anita Thapa     | Pokhara-4   | Pokhara   | Gandaki | 6000.00 |
+| C105     | Keshav Adhikari | Chitwan-5   | Chitwan   | Bagmati | 7000.00 |
++----------+-----------------+-------------+-----------+---------+---------+
+5 rows in set (0.01 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

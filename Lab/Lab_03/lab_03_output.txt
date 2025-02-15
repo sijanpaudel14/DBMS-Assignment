@@ -1,0 +1,177 @@
+Show existing databases
+
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| lab_01             |
+| lab_02             |
+| mysql              |
+| performance_schema |
++--------------------+
+5 rows in set (0.00 sec)
+
+
+Create a new database
+
+mysql> CREATE DATABASE lab_03;
+Query OK, 1 row affected (0.03 sec)
+
+Use the created database
+
+mysql> USE lab_03;
+Database changed
+
+
+
+
+
+1. Create the Teacher table
+
+mysql> CREATE TABLE Teacher (
+    ->     Id INT PRIMARY KEY,
+    ->     Name VARCHAR(50),
+    ->     DeptNo INT,
+    ->     Date_of_joining DATE,
+    ->     DeptName VARCHAR(50),
+    ->     Location VARCHAR(100),
+    ->     Salary DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (0.11 sec)
+
+
+Check if the table is created
+
+mysql> SHOW TABLES;
++------------------+
+| Tables_in_lab_03 |
++------------------+
+| Teacher          |
++------------------+
+1 row in set (0.00 sec)
+
+
+
+
+2. Insert 5 records 
+
+mysql> INSERT INTO Teacher (Id, Name, DeptNo, Date_of_joining, DeptName, Location, Salary)
+    -> VALUES
+    -> (1, 'Bishal Sharma', 101, '2015-06-01', 'Mathematics', 'Kathmandu', 40000.00),
+    -> (2, 'Sanjay Adhikari', 102, '2016-07-15', 'Commerce', 'Lalitpur', 35000.00),
+    -> (3, 'Rita Gurung', 103, '2017-08-10', 'Science', 'Bhaktapur', 45000.00),
+    -> (4, 'Sunita Koirala', 101, '2018-09-05', 'Mathematics', 'Pokhara', 42000.00),
+    -> (5, 'Prakash Thapa', 102, '2019-10-20', 'Commerce', 'Chitwan', 37000.00);
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+See the structure of the table
+
+
+mysql> SHOW COLUMNS FROM Teacher;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Id              | int           | NO   | PRI | NULL    |       |
+| Name            | varchar(50)   | YES  |     | NULL    |       |
+| DeptNo          | int           | YES  |     | NULL    |       |
+| Date_of_joining | date          | YES  |     | NULL    |       |
+| DeptName        | varchar(50)   | YES  |     | NULL    |       |
+| Location        | varchar(100)  | YES  |     | NULL    |       |
+| Salary          | decimal(10,2) | YES  |     | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+3. Give Increment of 25% salary for Mathematics Department
+
+mysql> START TRANSACTION;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> UPDATE Teacher
+    -> SET Salary = Salary * 1.25
+    -> WHERE DeptName = 'Mathematics';
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> SELECT * FROM Teacher WHERE DeptName = 'Mathematics';
++----+----------------+--------+-----------------+-------------+-----------+----------+
+| Id | Name           | DeptNo | Date_of_joining | DeptName    | Location  | Salary   |
++----+----------------+--------+-----------------+-------------+-----------+----------+
+|  1 | Bishal Sharma  |    101 | 2015-06-01      | Mathematics | Kathmandu | 50000.00 |
+|  4 | Sunita Koirala |    101 | 2018-09-05      | Mathematics | Pokhara   | 52500.00 |
++----+----------------+--------+-----------------+-------------+-----------+----------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+
+
+4. Perform Rollback command
+
+mysql> ROLLBACK;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> SELECT * FROM Teacher WHERE DeptName = 'Mathematics';
++----+----------------+--------+-----------------+-------------+-----------+----------+
+| Id | Name           | DeptNo | Date_of_joining | DeptName    | Location  | Salary   |
++----+----------------+--------+-----------------+-------------+-----------+----------+
+|  1 | Bishal Sharma  |    101 | 2015-06-01      | Mathematics | Kathmandu | 40000.00 |
+|  4 | Sunita Koirala |    101 | 2018-09-05      | Mathematics | Pokhara   | 42000.00 |
++----+----------------+--------+-----------------+-------------+-----------+----------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+
+5. Give Increment of 15% salary for Commerce Department
+
+mysql> START TRANSACTION;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> UPDATE Teacher
+    -> SET Salary = Salary * 1.15
+    -> WHERE DeptName = 'Commerce';
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> SELECT * FROM Teacher WHERE DeptName = 'Commerce';
++----+-----------------+--------+-----------------+----------+----------+----------+
+| Id | Name            | DeptNo | Date_of_joining | DeptName | Location | Salary   |
++----+-----------------+--------+-----------------+----------+----------+----------+
+|  2 | Sanjay Adhikari |    102 | 2016-07-15      | Commerce | Lalitpur | 40250.00 |
+|  5 | Prakash Thapa   |    102 | 2019-10-20      | Commerce | Chitwan  | 42550.00 |
++----+-----------------+--------+-----------------+----------+----------+----------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+
+6. Perform commit command
+
+mysql> COMMIT;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> SELECT * FROM Teacher WHERE DeptName = 'Commerce';
++----+-----------------+--------+-----------------+----------+----------+----------+
+| Id | Name            | DeptNo | Date_of_joining | DeptName | Location | Salary   |
++----+-----------------+--------+-----------------+----------+----------+----------+
+|  2 | Sanjay Adhikari |    102 | 2016-07-15      | Commerce | Lalitpur | 40250.00 |
+|  5 | Prakash Thapa   |    102 | 2019-10-20      | Commerce | Chitwan  | 42550.00 |
++----+-----------------+--------+-----------------+----------+----------+----------+
+2 rows in set (0.00 sec)
+

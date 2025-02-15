@@ -1,0 +1,88 @@
+
+mysql> USE EnterpriseDB;
+Database changed
+
+
+
+a) Display the employee details for departments that are the same in both the Emp and Dept tables
+mysql> SELECT e.*
+    -> FROM Emp e
+    -> JOIN Dept d ON e.deptno = d.deptno;
+
++-------+-----------------+-------------------+------+------------+--------+-------+--------+
+| empno | ename           | job               | mgr  | hiredate   | sal    | comm  | deptno |
++-------+-----------------+-------------------+------+------------+--------+-------+--------+
+|     1 | Sanjay Sharma   | Manager           | NULL | 1990-01-15 | 90000  | 5000  |     10 |
+|     2 | Poonam Rai      | Assistant Manager |    1 | 2000-03-22 | 60000  | 3000  |     20 |
+|     3 | Rajesh Thapa    | Senior Developer  |    1 | 1995-05-10 | 80000  | 4000  |     30 |
+|     4 | Anita Koirala   | Developer         |    3 | 2010-07-30 | 70000  | 3500  |     30 |
+|     5 | Rita Joshi      | Marketing Specialist | 1 | 2005-09-25 | 75000  | 2500  |    40  |
+|     6 | Deepak Adhikari | Finance Analyst   |    2 | 2015-11-12 | 65000  | 2000  |     20 |
++-------+-----------------+-------------------+------+------------+--------+-------+--------+
+6 rows in set (0.00 sec)
+
+
+
+
+
+
+b) Display the employee name and department name using a left outer join
+mysql> SELECT e.ename AS Employee_Name, d.dname AS Department_Name
+    -> FROM Emp e
+    -> LEFT JOIN Dept d ON e.deptno = d.deptno;
++-----------------+-----------------------+
+| Employee_Name   | Department_Name       |
++-----------------+-----------------------+
+| Sanjay Sharma   | Human Resources       |
+| Poonam Rai      | Finance               |
+| Rajesh Thapa    | Information Technology|
+| Anita Koirala   | Information Technology|
+| Rita Joshi      | Marketing             |
+| Deepak Adhikari | Finance               |
++-----------------+-----------------------+
+6 rows in set (0.00 sec)
+
+
+
+
+
+
+c) Display the employee name and department name using a right outer join
+mysql> SELECT e.ename AS Employee_Name, d.dname AS Department_Name
+    -> FROM Emp e
+    -> RIGHT JOIN Dept d ON e.deptno = d.deptno;
++-----------------+-----------------------+
+| Employee_Name   | Department_Name       |
++-----------------+-----------------------+
+| Sanjay Sharma   | Human Resources       |
+| Poonam Rai      | Finance               |
+| Rajesh Thapa    | Information Technology|
+| Anita Koirala   | Information Technology|
+| Rita Joshi      | Marketing             |
+| Deepak Adhikari | Finance               |
++-----------------+-----------------------+
+6 rows in set (0.00 sec)
+
+
+
+
+
+
+d) Display the details of employees who draw a salary greater than the average salary
+mysql> WITH AvgSal AS (
+    ->     SELECT AVG(sal) AS Average_Salary
+    ->     FROM Emp
+    -> )
+    -> SELECT e.*
+    -> FROM Emp e
+    -> JOIN AvgSal a ON e.sal > a.Average_Salary;
++-------+-----------------+-------------------+------+------------+--------+-------+--------+
+| empno | ename           | job               | mgr  | hiredate   | sal    | comm  | deptno |
++-------+-----------------+-------------------+------+------------+--------+-------+--------+
+|     1 | Sanjay Sharma   | Manager           | NULL | 1990-01-15 | 90000  | 5000  |     10 |
+|     2 | Poonam Rai      | Assistant Manager |    1 | 2000-03-22 | 60000  | 3000  |     20 |
+|     3 | Rajesh Thapa    | Senior Developer  |    1 | 1995-05-10 | 80000  | 4000  |     30 |
+|     5 | Rita Joshi      | Marketing Specialist | 1 | 2005-09-25| 75000 | 2500  |    40    |
++-------+-----------------+-------------------+------+------------+--------+-------+--------+
+4 rows in set (0.00 sec)
+

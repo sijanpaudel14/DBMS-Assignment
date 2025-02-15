@@ -1,0 +1,213 @@
+Show existing databases
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| lab_01             |
+| lab_02             |
+| lab_03             |
+| lab_04             |
+| lab_05             |
+| mysql              |
+| performance_schema |
++--------------------+
+8 rows in set (0.00 sec)
+
+
+
+
+Create a new database
+
+mysql> -- Create a new database
+mysql> CREATE DATABASE lab_06;
+Query OK, 1 row affected (0.03 sec)
+
+
+
+
+Use the created database
+
+mysql> USE lab_06;
+Database changed
+
+mysql> CREATE DATABASE EnterpriseDB;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> USE EnterpriseDB;
+Database changed
+
+
+
+
+1. Create the Dept table
+
+mysql> CREATE TABLE Dept (
+    ->     deptno INT PRIMARY KEY,
+    ->     dname VARCHAR(50),
+    ->     loc VARCHAR(50)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> SHOW TABLES;
++------------------------+
+| Tables_in_EnterpriseDB |
++------------------------+
+| Dept                   |
++------------------------+
+1 row in set (0.01 sec)
+
+mysql> SHOW COLUMNS FROM Dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| deptno | int         | NO   | PRI | NULL    |       |
+| dname  | varchar(50) | YES  |     | NULL    |       |
+| loc    | varchar(50) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+
+
+2. Create the Emp table
+
+mysql> CREATE TABLE Emp (
+    ->     empno INT PRIMARY KEY,
+    ->     ename VARCHAR(50),
+    ->     job VARCHAR(50),
+    ->     mgr INT,
+    ->     hiredate DATE,
+    ->     sal DECIMAL(10, 2),
+    ->     comm DECIMAL(10, 2),
+    ->     deptno INT,
+    ->     FOREIGN KEY (deptno) REFERENCES Dept(deptno),
+    ->     FOREIGN KEY (mgr) REFERENCES Emp(empno)
+    -> );
+Query OK, 0 rows affected (0.13 sec)
+
+
+mysql> SHOW TABLES;
++------------------------+
+| Tables_in_EnterpriseDB |
++------------------------+
+| Dept                   |
+| Emp                    |
++------------------------+
+2 rows in set (0.00 sec)
+
+
+mysql> SHOW COLUMNS FROM Emp;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| empno    | int           | NO   | PRI | NULL    |       |
+| ename    | varchar(50)   | YES  |     | NULL    |       |
+| job      | varchar(50)   | YES  |     | NULL    |       |
+| mgr      | int           | YES  | MUL | NULL    |       |
+| hiredate | date          | YES  |     | NULL    |       |
+| sal      | decimal(10,2) | YES  |     | NULL    |       |
+| comm     | decimal(10,2) | YES  |     | NULL    |       |
+| deptno   | int           | YES  | MUL | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+
+
+
+
+
+3. Insert data into Dept and Emp tables
+
+
+    Inserting data into Dept table
+
+
+mysql> INSERT INTO Dept (deptno, dname, loc)
+    -> VALUES
+    -> (10, 'Human Resources', 'Kathmandu'),
+    -> (20, 'Finance', 'Pokhara'),
+    -> (30, 'Information Technology', 'Biratnagar'),
+    -> (40, 'Marketing', 'Lalitpur');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+
+
+    Inserting data into Dept table
+
+mysql> INSERT INTO Emp (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+    -> VALUES
+    -> (1, 'Sanjay Sharma', 'Manager', NULL, '1990-01-15', 90000.00, 5000.00, 10),
+    -> (2, 'Poonam Rai', 'Assistant Manager', 1, '2000-03-22', 60000.00, 3000.00, 20),
+    -> (3, 'Rajesh Thapa', 'Senior Developer', 1, '1995-05-10', 80000.00, 4000.00, 30),
+    -> (4, 'Anita Koirala', 'Developer', 3, '2010-07-30', 70000.00, 3500.00, 30),
+    -> (5, 'Rita Joshi', 'Marketing Specialist', 1, '2005-09-25', 75000.00, 2500.00, 40),
+    -> (6, 'Deepak Adhikari', 'Finance Analyst', 2, '2015-11-12', 65000.00, 2000.00, 20);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+
+
+
+4. Update the employee salary by 15%, whose experience is greater than 30 years
+
+mysql> UPDATE Emp
+    -> SET sal = sal * 1.15
+    -> WHERE YEAR(CURDATE()) - YEAR(hiredate) > 30;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+
+
+5. Delete the employees, who completed 30 years of service
+
+mysql> DELETE FROM Emp
+    -> WHERE YEAR(CURDATE()) - YEAR(hiredate) >= 30;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`EnterpriseDB`.`Emp`, CONSTRAINT `Emp_ibfk_2` FOREIGN KEY (`mgr`) REFERENCES `Emp` (`empno`))
+
+
+
+
+6. Display the manager who is having maximum number of employees working under him
+
+mysql> SELECT mgr, COUNT(*) AS num_employees
+    -> FROM Emp
+    -> GROUP BY mgr
+    -> ORDER BY num_employees DESC
+    -> LIMIT 1;
++------+---------------+
+| mgr  | num_employees |
++------+---------------+
+|    1 |             3 |
++------+---------------+
+1 row in set (0.00 sec)
+
+
+
+
+7. Create a view, which contains employee names and their manager
+
+mysql> CREATE VIEW EmployeeManager AS
+    -> SELECT e1.ename AS Employee_Name, e2.ename AS Manager_Name
+    -> FROM Emp e1
+    -> LEFT JOIN Emp e2 ON e1.mgr = e2.empno;
+Query OK, 0 rows affected (0.01 sec)
+
+
+
+Display the view
+mysql> SELECT * FROM EmployeeManager;
++-----------------+---------------+
+| Employee_Name   | Manager_Name  |
++-----------------+---------------+
+| Sanjay Sharma   | NULL          |
+| Poonam Rai      | Sanjay Sharma |
+| Rajesh Thapa    | Sanjay Sharma |
+| Anita Koirala   | Rajesh Thapa  |
+| Rita Joshi      | Sanjay Sharma |
+| Deepak Adhikari | Poonam Rai    |
++-----------------+---------------+
+6 rows in set (0.01 sec)
